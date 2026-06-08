@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+
+# Generated "latest" artifacts
+reports/latest_first_board_review.md
+reports/morning_watch/latest_9_25_watch.md
+data/reviews/latest_*.json
+data/limit_days/latest.json
+data/candidates/latest_*.json
+
+# Windows noise
+Thumbs.db
+Desktop.ini
