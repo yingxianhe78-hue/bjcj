@@ -304,3 +304,35 @@ python scripts/build_closed_loop_weekly.py --end-date YYYY-MM-DD
 - 这一版只做观察分层、盘中状态记录、收盘结果与归因统计。
 - 不输出买卖建议，不接自动交易。
 - 盘中固定时点暂定为 `09:35`、`10:00`、`10:30`、`14:30`。
+
+### Windows 自动化
+
+标准版注册到 Windows 任务计划程序，默认写入正式路径 `data/` 和 `reports/`：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/register_closed_loop_tasks.ps1
+```
+
+注册后会创建 7 个任务：
+
+- `BJCJ_ClosedLoop_0925_MorningWatch`
+- `BJCJ_ClosedLoop_0935_Snapshot`
+- `BJCJ_ClosedLoop_1000_Snapshot`
+- `BJCJ_ClosedLoop_1030_Snapshot`
+- `BJCJ_ClosedLoop_1430_Snapshot`
+- `BJCJ_ClosedLoop_1505_DailyReport`
+- `BJCJ_ClosedLoop_1520_WeeklyReport`
+
+其中 9:25 任务读取最新首板复盘观察池；后续盘中、日复盘和周复盘任务会通过 `data/closed_loop/<date>/watch.json` 自动识别最近一次观察池日期。
+
+如果当前执行环境不能写入 `data/` 或 `reports/`，再启用备用运行目录：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/register_closed_loop_tasks.ps1 -UseRuntimeRoot
+```
+
+卸载任务：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/unregister_closed_loop_tasks.ps1
+```
