@@ -336,3 +336,27 @@ powershell -ExecutionPolicy Bypass -File scripts/register_closed_loop_tasks.ps1 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/unregister_closed_loop_tasks.ps1
 ```
+
+### 闭环验收清单
+
+自动化跑完后，可以用验收脚本检查当天产物是否齐全：
+
+```powershell
+python scripts/check_closed_loop_acceptance.py
+```
+
+也可以指定日期：
+
+```powershell
+python scripts/check_closed_loop_acceptance.py --trade-date YYYY-MM-DD
+```
+
+脚本会检查：
+
+- `watch.json` 是否存在且有观察池记录
+- `snapshots.json` 是否覆盖 `09:35`、`10:00`、`10:30`、`14:30`
+- `close.json` 是否生成且数量与观察池匹配
+- `attribution.json` 是否生成且数量与观察池匹配
+- `reports/closed_loop/YYYY-MM-DD-daily.md` 是否存在且非空
+
+输出状态为 `PASS` 时退出码为 `0`；存在缺失或不完整项时输出 `CHECK`，退出码为 `1`。
