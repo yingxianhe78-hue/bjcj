@@ -62,6 +62,14 @@ def build_command(task: str, time_label: str | None = None, runtime_root: str | 
                 latest_watch_trade_date(runtime_root),
             ]
         )
+    elif task == "acceptance":
+        command.extend(
+            [
+                str(script_path("check_closed_loop_acceptance.py")),
+                "--trade-date",
+                latest_watch_trade_date(runtime_root),
+            ]
+        )
     else:
         raise SystemExit(f"unsupported task: {task}")
 
@@ -72,7 +80,7 @@ def build_command(task: str, time_label: str | None = None, runtime_root: str | 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run one closed-loop automation task.")
-    parser.add_argument("task", choices=["morning-watch", "snapshot", "daily", "weekly"])
+    parser.add_argument("task", choices=["morning-watch", "snapshot", "daily", "weekly", "acceptance"])
     parser.add_argument("--time-label", choices=["09:35", "10:00", "10:30", "14:30"])
     parser.add_argument("--runtime-root", default=None, help="Fallback output root for restricted environments.")
     parser.add_argument("--dry-run", action="store_true", help="Print the command without executing it.")

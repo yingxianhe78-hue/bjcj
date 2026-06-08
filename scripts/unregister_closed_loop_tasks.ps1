@@ -7,6 +7,7 @@ $taskNames = @(
     "BJCJ_ClosedLoop_1030_Snapshot",
     "BJCJ_ClosedLoop_1430_Snapshot",
     "BJCJ_ClosedLoop_1505_DailyReport",
+    "BJCJ_ClosedLoop_1510_AcceptanceCheck",
     "BJCJ_ClosedLoop_1520_WeeklyReport"
 )
 

@@ -313,7 +313,7 @@ python scripts/build_closed_loop_weekly.py --end-date YYYY-MM-DD
 powershell -ExecutionPolicy Bypass -File scripts/register_closed_loop_tasks.ps1
 ```
 
-注册后会创建 7 个任务：
+注册后会创建 8 个任务：
 
 - `BJCJ_ClosedLoop_0925_MorningWatch`
 - `BJCJ_ClosedLoop_0935_Snapshot`
@@ -321,9 +321,10 @@ powershell -ExecutionPolicy Bypass -File scripts/register_closed_loop_tasks.ps1
 - `BJCJ_ClosedLoop_1030_Snapshot`
 - `BJCJ_ClosedLoop_1430_Snapshot`
 - `BJCJ_ClosedLoop_1505_DailyReport`
+- `BJCJ_ClosedLoop_1510_AcceptanceCheck`
 - `BJCJ_ClosedLoop_1520_WeeklyReport`
 
-其中 9:25 任务读取最新首板复盘观察池；后续盘中、日复盘和周复盘任务会通过 `data/closed_loop/<date>/watch.json` 自动识别最近一次观察池日期。
+其中 9:25 任务读取最新首板复盘观察池；后续盘中、日复盘、15:10 验收和周复盘任务会通过 `data/closed_loop/<date>/watch.json` 自动识别最近一次观察池日期。
 
 如果当前执行环境不能写入 `data/` 或 `reports/`，再启用备用运行目录：
 

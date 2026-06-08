@@ -50,6 +50,20 @@ class ClosedLoopRunnerTests(unittest.TestCase):
         self.assertIn("--runtime-root", command)
         self.assertIn("runtime_outputs", command)
 
+    def test_build_acceptance_command_uses_latest_watch_trade_date(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            watch_dir = root / "data" / "closed_loop" / "2026-06-05"
+            watch_dir.mkdir(parents=True)
+            (watch_dir / "watch.json").write_text("[]", encoding="utf-8")
+
+            with patch.object(run_closed_loop_task, "PROJECT_ROOT", root):
+                command = run_closed_loop_task.build_command("acceptance")
+
+        self.assertIn("check_closed_loop_acceptance.py", command[1])
+        self.assertIn("--trade-date", command)
+        self.assertIn("2026-06-05", command)
+
 
 if __name__ == "__main__":
     unittest.main()

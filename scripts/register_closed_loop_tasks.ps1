@@ -52,6 +52,7 @@ Register-ClosedLoopTask -Name "BJCJ_ClosedLoop_1000_Snapshot" -Task "snapshot" -
 Register-ClosedLoopTask -Name "BJCJ_ClosedLoop_1030_Snapshot" -Task "snapshot" -At "10:30" -TimeLabel "10:30"
 Register-ClosedLoopTask -Name "BJCJ_ClosedLoop_1430_Snapshot" -Task "snapshot" -At "14:30" -TimeLabel "14:30"
 Register-ClosedLoopTask -Name "BJCJ_ClosedLoop_1505_DailyReport" -Task "daily" -At "15:05"
+Register-ClosedLoopTask -Name "BJCJ_ClosedLoop_1510_AcceptanceCheck" -Task "acceptance" -At "15:10"
 Register-ClosedLoopTask -Name "BJCJ_ClosedLoop_1520_WeeklyReport" -Task "weekly" -At "15:20" -DaysOfWeek "FRI"
 
 Write-Host "Closed-loop tasks registered. Project root: $ProjectRoot"
