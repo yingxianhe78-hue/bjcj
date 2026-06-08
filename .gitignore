@@ -5,6 +5,7 @@ __pycache__/
 venv/
 .mypy_cache/
 .ruff_cache/
+runtime_outputs/
 
 # Generated "latest" artifacts
 reports/latest_first_board_review.md

@@ -251,3 +251,56 @@ python scripts/morning_watch_925.py --trade-date 2026-06-05
 ```
 
 已创建工作日 9:25 自动任务：`A股观察池 9:25 盯盘`。自动任务会运行盯盘脚本并汇总观察池分层，不输出买卖建议。
+## 强化版闭环流程
+
+当前已接入第一版闭环主链，围绕 `9:25 观察池 -> 盘中快照 -> 收盘结果 -> 归因 -> 日报/周报` 展开。
+
+### 每日执行顺序
+
+盘前：
+
+```powershell
+python scripts/morning_watch_925.py --trade-date YYYY-MM-DD
+```
+
+如遇到运行环境对 `data/`、`reports/` 子目录写入受限，可追加：
+
+```powershell
+--runtime-root runtime_outputs
+```
+
+盘中固定时点：
+
+```powershell
+python scripts/capture_intraday_snapshot.py --trade-date YYYY-MM-DD --time-label 09:35
+python scripts/capture_intraday_snapshot.py --trade-date YYYY-MM-DD --time-label 10:00
+python scripts/capture_intraday_snapshot.py --trade-date YYYY-MM-DD --time-label 10:30
+python scripts/capture_intraday_snapshot.py --trade-date YYYY-MM-DD --time-label 14:30
+```
+
+收盘后：
+
+```powershell
+python scripts/build_closed_loop_daily.py --trade-date YYYY-MM-DD
+```
+
+周度复盘：
+
+```powershell
+python scripts/build_closed_loop_weekly.py --end-date YYYY-MM-DD
+```
+
+### 结构化输出
+
+- `data/closed_loop/YYYY-MM-DD/watch.json`
+- `data/closed_loop/YYYY-MM-DD/snapshots.json`
+- `data/closed_loop/YYYY-MM-DD/close.json`
+- `data/closed_loop/YYYY-MM-DD/attribution.json`
+- `reports/closed_loop/YYYY-MM-DD-daily.md`
+- `reports/closed_loop/YYYY-MM-DD-weekly.md`
+
+### 当前说明
+
+- 这一版只做观察分层、盘中状态记录、收盘结果与归因统计。
+- 不输出买卖建议，不接自动交易。
+- 盘中固定时点暂定为 `09:35`、`10:00`、`10:30`、`14:30`。

@@ -6,6 +6,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 from typing import Any
 
+from bjcj.review.closed_loop_models import WatchRecord
 from bjcj.review.tencent_finance import TencentRealtimeQuote
 
 
@@ -37,6 +38,29 @@ class MorningWatchRow:
 class MorningWatchResult:
     trade_date: str
     rows: list[MorningWatchRow]
+
+
+def morning_watch_to_watch_records(
+    result: MorningWatchResult,
+    *,
+    session: str = "morning_watch_925",
+) -> list[WatchRecord]:
+    return [
+        WatchRecord(
+            trade_date=result.trade_date,
+            session=session,
+            symbol=row.symbol,
+            name=row.name,
+            watch_level=row.level,
+            open_premium_pct=row.open_premium,
+            current_pct_925=row.pct_chg,
+            turnover_amount_925=row.turnover_amount,
+            first_limit_time=row.first_limit_time,
+            open_limit_count=row.open_limit_count,
+            watch_reasons=list(row.notes),
+        )
+        for row in result.rows
+    ]
 
 
 def load_review_payload(path: str | Path) -> dict[str, Any]:

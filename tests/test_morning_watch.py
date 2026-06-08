@@ -5,6 +5,7 @@ from bjcj.review.morning_watch import (
     MorningWatchConfig,
     build_morning_watch,
     extract_watch_pool_symbols,
+    morning_watch_to_watch_records,
     render_morning_watch_markdown,
 )
 from bjcj.review.tencent_finance import TencentRealtimeQuote
@@ -141,6 +142,46 @@ class MorningWatchTest(unittest.TestCase):
 
         self.assertIn("# 2026-06-05 次日观察池 9:25 盯盘", markdown)
         self.assertIn("| 600516 | 方大炭素 | 正常观察 | 4.97% | 3.26% | 1.20 亿 | 09:37 | 0 |", markdown)
+
+
+    def test_builds_watch_records_for_closed_loop(self):
+        review = {
+            "trade_date": "2026-06-05",
+            "watch_pool": [
+                {
+                    "symbol": "600516",
+                    "name": "鏂瑰ぇ鐐礌",
+                    "turnover_amount": 751947918,
+                    "first_limit_time": "09:37",
+                    "open_limit_count": 0,
+                    "strength_score": "85.00",
+                }
+            ],
+        }
+        quotes = {
+            "600516": TencentRealtimeQuote(
+                symbol="600516",
+                name="鏂瑰ぇ鐐礌",
+                close=Decimal("6.12"),
+                previous_close=Decimal("5.83"),
+                open=Decimal("6.02"),
+                high=Decimal("6.12"),
+                low=Decimal("5.98"),
+                turnover_amount=120_000_000,
+                turnover_rate=Decimal("1.20"),
+                limit_up=Decimal("6.41"),
+                limit_down=Decimal("5.25"),
+                stock_type="GP-A",
+            )
+        }
+
+        result = build_morning_watch(review, quotes)
+        records = morning_watch_to_watch_records(result)
+
+        self.assertEqual(records[0].trade_date, "2026-06-05")
+        self.assertEqual(records[0].session, "morning_watch_925")
+        self.assertEqual(records[0].symbol, "600516")
+        self.assertEqual(records[0].watch_reasons, ["红盘承接", "竞价高开"])
 
 
 if __name__ == "__main__":
